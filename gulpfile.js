@@ -47,7 +47,6 @@ const justMove = (fromPath, toPath) => {
         .pipe(gulp.dest(toPath));
 
     func();
-
     gulp.watch(fromPath, func);
 }
 
@@ -58,6 +57,30 @@ const moveFilesTask = (cb) => {
     cb();
 }
 
+/*
+{
+
+*/
+
+const justUglify = (fromPath, toPath) => {
+    const func = () => gulp.src(fromPath)
+        .pipe(uglify({
+            mangle: false
+        }
+        ))
+        .pipe(gulp.dest(toPath));
+
+    func();
+    gulp.watch(fromPath, func);
+}
+
+const uglifyTask = (cb) => {
+    justUglify(rootDir + "views/scripts/build/*.js", rootDir + "public/scripts/");
+    //justUglify(rootDir + "views/styles/build/*.css", rootDir + "public/styles/");
+}
+
 gulp.task("pseudo-uglify", moveFilesTask);
+gulp.task("uglify", uglifyTask);
 
 gulp.task("development", gulp.series("merge-dependencies", "pseudo-uglify"));
+gulp.task("release", gulp.series("merge-dependencies", "uglify"));
